@@ -1,0 +1,74 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mfa-gateway
+  # Default profile uses PostgreSQL. Switch to the 'h2' profile for a zero-infra demo:
+  #   mvn spring-boot:run -Dspring-boot.run.profiles=h2
+  profiles:
+    active: ${SPRING_PROFILE:postgres}
+
+# Application-specific configuration (bound by AppProperties). Global to all profiles.
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  session:
+    idle-timeout-minutes: ${SESSION_IDLE_MINUTES:5}
+    absolute-timeout-minutes: ${SESSION_ABSOLUTE_MINUTES:30}
+    admin-timeout-minutes: ${SESSION_ADMIN_MINUTES:15}
+    step-up-validity-seconds: ${STEP_UP_VALIDITY_SECONDS:120}
+  otp:
+    length: 6
+    ttl-minutes: ${OTP_TTL_MINUTES:5}
+    max-attempts: ${OTP_MAX_ATTEMPTS:3}
+    resend-cooldown-seconds: ${OTP_RESEND_COOLDOWN:30}
+  recovery:
+    code-count: ${RECOVERY_CODE_COUNT:10}
+  mfa:
+    # When true, OTPs are also logged to the backend console (demo email/SMS sink).
+    mock-print-otp: ${MFA_MOCK_PRINT_OTP:true}
+  working-hours:
+    start: ${WORK_HOURS_START:7}
+    end: ${WORK_HOURS_END:19}
+
+logging:
+  level:
+    com.cps.mfa: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/cps_mfa}
+    username: ${DB_USERNAME:cps_mfa}
+    password: ${DB_PASSWORD:cps_mfa}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+    open-in-view: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    url: jdbc:h2:mem:cps_mfa;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

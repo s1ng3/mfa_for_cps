@@ -1,0 +1,32 @@
+package com.cps.mfa.common;
+
+/**
+ * Canonical catalogue of security-relevant events. Every value maps to an
+ * {@code AUDIT_*} entry the SIEM exporter can ship downstream.
+ */
+public enum AuditEventType {
+    AUTH_LOGIN_SUCCESS,
+    AUTH_LOGIN_FAILED,
+    MFA_EMAIL_SENT,
+    MFA_SMS_SENT,
+    MFA_SUCCESS,
+    MFA_FAILED,
+    WEBAUTHN_REGISTERED,
+    WEBAUTHN_SUCCESS,
+    WEBAUTHN_FAILED,
+    RECOVERY_CODE_USED,
+    SESSION_CREATED,
+    SESSION_EXPIRED,
+    SESSION_TERMINATED,
+    CRITICAL_ACTION_REQUESTED,
+    STEP_UP_MFA_REQUIRED,
+    STEP_UP_MFA_SUCCESS,
+    STEP_UP_MFA_FAILED,
+    CPS_ACTION_EXECUTED,
+    UNAUTHORIZED_ACTION_ATTEMPT,
+    INCIDENT_CREATED,
+    LOG_EXPORTED,
+    ACCOUNT_LOCKED,
+    ACCOUNT_UNLOCKED,
+    RECOVERY_CODES_REGENERATED
+}

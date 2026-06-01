@@ -1,0 +1,23 @@
+# PostgreSQL for the CPS MFA Gateway demo.
+#   docker compose up -d
+# The backend's default datasource (postgres profile) points at this instance.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cps-mfa-postgres
+    environment:
+      POSTGRES_DB: cps_mfa
+      POSTGRES_USER: cps_mfa
+      POSTGRES_PASSWORD: cps_mfa
+    ports:
+      - "5432:5432"
+    volumes:
+      - cps_mfa_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cps_mfa"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cps_mfa_pgdata:
